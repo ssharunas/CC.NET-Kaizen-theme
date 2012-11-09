@@ -23,12 +23,15 @@
 	float: left;
 	margin-right: 5px;
 }
+.muted {
+	color: #888;
+}
 </style>
 <script type="text/javascript">
 var dataUrl='$dataUrl';
 var imagesUrl='$applicationPath/images/';
 var lastStart;
-var refreshDelay=10000;
+var refreshDelay=5000;
 
 jQuery(function(){
     jQuery.getJSON(dataUrl, function(json){
@@ -61,7 +64,12 @@ function refreshDisplay(){
 function refreshData(item){
     var id = item.id.replace(/-/g, '');
     var title = jQuery('#h' + id);
-    title.text(item.name);
+	
+	var itemHeader = item.name;
+	if(item.description)
+		itemHeader = '<span class="muted">' + itemHeader + "</span>: " + item.description;
+    title.html(itemHeader);
+	
     title.prepend('<img src="' + imagesUrl + item.status + '.png"/>');
     var details = jQuery('#c' + id);
     generateDetails(details, item);
@@ -78,7 +86,10 @@ function generateStatusItem(item, parent){
     group.addClass('dataGroup');
     
     var id = item.id.replace(/-/g, '');
-    var title = jQuery('<h3>' + item.name + '</h3>');
+	var itemHeader = item.name;
+	if(item.description)
+		itemHeader = '<span class="muted">' + itemHeader + "</span>: " + item.description;
+    var title = jQuery('<h3>' + itemHeader + '</h3>');
     title.prepend('<img src="' + imagesUrl + item.status + '.png"/>');
     title.attr('id', 'h' + id);
     group.append(title);
@@ -138,7 +149,7 @@ function formatTime(time){
 </script>
 <div class="section">
   <h1 class="title">
-    <span class="title">Current Status</span>
+    <span class="title">Current Status <img style="display:none;" id="loadingDialog" src="/ccnet/images/Running_old.png" /></span>
     <span class="title-data">$projectName</span>
   </h1>
   <div class="section-content">
